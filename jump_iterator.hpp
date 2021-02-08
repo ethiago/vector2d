@@ -1,12 +1,19 @@
 #pragma once
 
-namespace nstd
+namespace hub
 {
 
 template<typename It>
-struct jump_iterator : It
+class jump_iterator : public It
 {
   using base = It;
+
+  base& as_base() noexcept { return *this; }
+  const base& as_base() const noexcept { return *this; }
+
+  unsigned _jump_fator;
+
+public:
 
   using iterator_type = typename base::iterator_type;
   using iterator_category = typename base::iterator_category;
@@ -53,13 +60,7 @@ struct jump_iterator : It
 
   friend jump_iterator operator+(difference_type, const jump_iterator&) noexcept;
   friend difference_type operator-(const jump_iterator&, const jump_iterator&);
-  
 
-private:
-  It& asBase() noexcept { return *this; }
-  const It& asBase() const noexcept { return *this; }
-
-  unsigned _jump_fator;
 };
 
 template<typename It>
@@ -76,7 +77,7 @@ inline typename jump_iterator<It>::difference_type operator-(
   if(lhs._jump_fator != rhs._jump_fator)
     throw std::invalid_argument("Jump factor must be the same");
   
-  return (lhs.asBase() - rhs.asBase())/lhs._jump_fator;
+  return (lhs.as_base() - rhs.as_base())/lhs._jump_fator;
 }
 
 }

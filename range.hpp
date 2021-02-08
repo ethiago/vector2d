@@ -2,12 +2,16 @@
 
 #include <iterator>
 
-namespace nstd
+namespace hub
 {
 
 template<typename It, typename RIt = std::reverse_iterator<It>>
-struct range
+class range
 {
+  It _begin;
+  It _end;
+
+public:
   range() = default;
 
   range(It bg, It end)
@@ -17,19 +21,11 @@ struct range
   auto begin() const noexcept { return _begin; }
   auto end() const noexcept { return _end; }
 
-  template<std::enable_if_t<!std::is_same_v<RIt,void>, bool> = true>
   auto rbegin() const noexcept { return RIt(_end()); }
-
-  template<std::enable_if_t<!std::is_same_v<RIt,void>, bool> = true>
   auto rend() const noexcept { return RIt(_begin()); }
 
-  template<std::enable_if_t<!std::is_same_v<RIt,void>, bool> = true>
   auto reverse() const noexcept
   { return range<RIt>(RIt(_end),RIt(_begin)); }
-
-private:
-  It _begin;
-  It _end;
 };
 
 }
